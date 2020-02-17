@@ -1,0 +1,25 @@
+.margin_top{
+    margin-top: 10px !important
+}
+
+@media (max-width: 768px) {
+    .margin-top-responsive{
+        margin-top: 40px !important;
+    }
+}
+
+.progress-outer[_ngcontent-yrf-c3] {
+    width: 100% !important;
+}
+
+@media (min-width: 576px) {
+    .container {
+        max-width: 100% !important;
+    }
+}
+
+@media (min-width: 576px){
+    .sidebar {
+        max-width: 98% !important;
+    }
+}

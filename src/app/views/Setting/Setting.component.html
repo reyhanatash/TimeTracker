@@ -1,0 +1,132 @@
+<div class="container" style="min-height: 550px; max-width: 100%;">  
+      <div class="page_title">
+          <i class="cui-settings title_icon"></i>
+          Setting
+      </div>
+    <div class="card mt-4 bg-none">
+      
+      <div class="card-body p-0">
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        
+        <div class="mat-elevation-z8 example-container">
+          <table class="w-100" mat-table [dataSource]="dataSource" matSort>
+            
+            <ng-container matColumnDef="payPeriod">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> PAY PERIOD </th>
+              <td mat-cell *matCellDef="let row"> {{row.payPeriod}} </td>
+            </ng-container> 
+            
+                        
+            <ng-container matColumnDef="startingDate">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> STARTING </th>
+              <td mat-cell *matCellDef="let row"> {{row.startingDate}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="payCycle">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> PAY CYCLE </th>
+              <td mat-cell *matCellDef="let row"> {{row.payCycle}} </td>
+            </ng-container>  
+            
+            <ng-container matColumnDef="accountantName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+              <td mat-cell *matCellDef="let row"> {{row.accountantName}} </td>
+            </ng-container> 
+
+            <ng-container matColumnDef="accountantEmail">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+              <td mat-cell *matCellDef="let row"> {{row.accountantEmail}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIONS </th>
+              <td mat-cell *matCellDef="let row" [style.color]="row.color">
+                <span (click)="editSetting(row)" class="edit-table-icon"><i class="fa fa-edit"></i></span>
+                <!-- <span (click)="deleteJob(row.jobCo)" class="delete-table-icon">
+                  <i class="fa fa-remove"></i>
+                </span> -->
+              </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+            </tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[10, 40, 100, 150]"></mat-paginator>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+    
+    <!-- Modal -->
+    <div id="settingModal" class="modal fade bd-example-modal-xl" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Update Setting</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-12 col-xl-12 ">
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field style="color: #adadad; font-size: 0.8rem;" class="w-100">
+                  <mat-label class="label-font-size" >Pay Period (disable)</mat-label>
+                  <input matInput disabled >{{this.payPeriod}}
+                </mat-form-field>
+              </div>                         
+            </div>
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size">Starting</mat-label>
+                  <input (click)="picker.open()" matInput [matDatepicker]="picker" [(ngModel)]="setting.startingDate" value="setting.startingDate">
+                  <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                  <mat-datepicker #picker></mat-datepicker>
+                </mat-form-field>              
+              </div>
+            </div>
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field style="color: #adadad; font-size: 0.8rem;" class="w-100">
+                  <mat-label class="label-font-size" >Pay Cycle (disable)</mat-label>
+                  <input matInput disabled >{{this.payCycle}}
+                </mat-form-field>
+              </div>                         
+            </div>
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size" >Name</mat-label>
+                  <input matInput [(ngModel)]="setting.accountantName">
+                </mat-form-field>
+              </div>                         
+            </div>
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size" >Email</mat-label>
+                  <input matInput [(ngModel)]="setting.accountantEmail">
+                </mat-form-field>
+              </div>                         
+            </div>
+             
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning btn_modal_submit" (click)="addSetting()">Update</button>
+          <button type="button" class="btn btn-danger btn_modal_submit" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+    </div>
+    

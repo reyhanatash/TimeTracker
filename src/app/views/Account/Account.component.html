@@ -1,0 +1,124 @@
+<div class="container" style="min-height: 550px; max-width: 100%;">  
+    <div class="page_title">
+      <i class="icon-user title_icon"></i>  
+      Accounting
+    </div>
+    <div class="card mt-4 bg-none">
+      <div class="card-body p-0">        
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        
+        <div class="mat-elevation-z8 example-container">
+          <table class="w-100" mat-table [dataSource]="dataSource" matSort>    
+                    
+            <ng-container matColumnDef="companyName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> COMPANY </th>
+              <td mat-cell *matCellDef="let row"> {{row.companyName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="adminName">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ADMIN </th>
+              <td mat-cell *matCellDef="let row"> {{row.adminName}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="adminEmail">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> EMAIL </th>
+              <td mat-cell *matCellDef="let row"> {{row.adminEmail}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="adminPhone">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> PHONE </th>
+              <td mat-cell *matCellDef="let row"> {{row.adminPhone}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIONS </th>
+              <td mat-cell *matCellDef="let row" [style.color]="row.color">
+                <span (click)="editAccount(row)" class="edit-table-icon"><i class="fa fa-edit"></i></span>               
+              </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+            </tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[10, 40, 100, 150]"></mat-paginator>
+        </div>
+      </div>
+    </div>
+    </div>
+    
+    
+    <!-- Modal -->
+    <div id="accountModal" class="modal fade bd-example-modal-xl" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Update Account</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-12 col-xl-12 ">
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size" >Name</mat-label>
+                  <input matInput [(ngModel)]="account.adminName">
+                </mat-form-field>
+              </div>                         
+            </div>
+
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size" >Email</mat-label>
+                  <input matInput [(ngModel)]="account.adminEmail">
+                </mat-form-field>
+              </div>                         
+            </div>
+            
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size" >Phone</mat-label>
+                  <!-- <span matPrefix>+1 &nbsp;</span> -->
+                  <input type="tel" placeholder="Phone" matInput [(ngModel)]="account.adminPhone">
+                </mat-form-field>
+              </div>                         
+            </div>           
+    
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="w-100">
+                  <mat-label class="label-font-size" >Company Name</mat-label>
+                  <input matInput [(ngModel)]="account.companyName">
+                </mat-form-field>
+              </div>                         
+            </div>
+                
+            <div class="row margin_top">
+              <div class="col-md-12 col-xl-12">
+                <mat-form-field class="place_color w-100">
+                  <mat-label class="label-font-size" >Password</mat-label>
+                  <input placeholder="******" matInput [(ngModel)]="account.password">
+                </mat-form-field> 
+              </div>
+            </div>
+             
+          </div>
+        </div>
+        <div class="modal-footer">
+            <!-- <div *ngIf="saveLoading">
+                <img src="../../../assets/images/saveLoading.gif" width="28"/>
+            </div> -->
+          <button type="button" class="btn btn-warning btn_modal_submit" (click)="addAccount()">Update</button>
+          <button type="button" class="btn btn-danger btn_modal_submit" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+    </div>
+    

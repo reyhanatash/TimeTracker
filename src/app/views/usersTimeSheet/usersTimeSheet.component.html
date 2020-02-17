@@ -1,0 +1,193 @@
+<div class="container" style="min-height: 550px; max-width: 100%;">  
+  <div class="mt-2 mb-2">
+    <button class="btn btn-add-custom animation-on-hover" style="margin-right: 10px;" type="button" (click)="downloadTimeSheet()">Download</button>
+    <button class="btn btn-add-custom animation-on-hover" style="margin-right: 10px;" (click)="newTime()" type="button">New Times</button>
+    <button id="btn_approve" class="btn btn_approve add-button-margin" (click)="approveCompany()" type="button"> 
+      <i class="check_color fa fa-check"></i>Approve
+    </button>
+    <span class="timeSheet-top-text pull-right" >Pay Period {{payPeriod}} ending {{dayEndDate}} {{monthEndDate}} {{yearEndDate}}</span>
+  </div>
+  <div class="page_title">
+    <i class="cui-calendar title_icon"></i>
+    TimeSheet
+  </div>  
+  <div class="card mt-4 bg-none">   
+      <div class="card-body p-0">            
+        <mat-form-field>
+          <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        
+        <div class="mat-elevation-z8 example-container">
+          <table class="w-100" mat-table [dataSource]="dataSource" matSort>            
+            <ng-container matColumnDef="employee">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> EMPLOYEE </th>
+              <td mat-cell *matCellDef="let row"> {{row.employee}} </td>
+            </ng-container>
+        
+            <ng-container matColumnDef="duration">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> TOTAL HOURS </th>
+              <td mat-cell *matCellDef="let row"> {{row.duration}} </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="showApprove">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> APPROVED </th>
+              <td mat-cell *matCellDef="let row">
+                  <!-- <i *ngIf="approved" class="check_color fa fa-check"></i>
+                  <i *ngIf="!approved" class="check_color fa fa-close"></i> -->
+
+                <div *ngIf="isShowApprove" class="form-check form-check-inline ml-1">
+                  <label class="label-font-weight form-check-label project_fontsize" for="approvedRadio1">
+                    <i class="check_color fa fa-check"></i>
+                    <input style="display: none;" class="form-check-input approved" name="approved" type="radio" id="approvedRadio1" value="1">
+                  </label>
+                </div>
+                <div *ngIf="!isShowApprove" class="form-check form-check-inline">
+                  <label class="label-font-weight form-check-label project_fontsize" for="approvedRadio2">
+                    <i class="check_color fa fa-close"></i>
+                    <input style="display: none;" class="form-check-input approved" name="approved" type="radio" id="approvedRadio2" value="0" >
+                  </label>
+                </div>  
+              </td>
+            </ng-container>
+            
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIONS </th>
+              <td mat-cell *matCellDef="let row" [style.color]="row.color">
+                <span (click)="editTimeSheet(row)" class="edit-table-icon"><i class="fa fa-file"></i></span>
+                <!-- <span (click)="deleteTimeSheet(row.staffCo)" class="delete-table-icon"><i class="fa fa-remove"></i></span> -->
+              </td>
+            </ng-container>
+        
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+            </tr>
+          </table>
+        
+          <mat-paginator [pageSizeOptions]="[10, 40, 100, 150]"></mat-paginator>
+        </div>      
+      </div>
+  </div>
+</div>
+
+ <!-- Modal -->
+ <div id="timeModal" class="modal fade bd-example-modal-xl" role="dialog">
+    <div class="modal-dialog modal-lg">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Insert Time Sheet</h4>
+        </div>
+        <div class="modal-body">
+          <div class="col-md-12 col-xl-12 ">
+
+              <div class="row margin_top">
+                <div class="col-md-12 col-xl-12">
+                  <mat-form-field class="w-100">
+                    <mat-label class="label-font-size">
+                      {{selectedJobValue}}
+                    </mat-label>
+                    <mat-select [(ngModel)]="timeSheet.jobCo">
+                      <mat-option *ngFor="let job of jobs" [value]="job.FldPkJobCo">
+                        {{job.FldJobNumber}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>      
+                </div>               
+              </div>
+
+              <div class="row margin_top">
+                <div class="col-md-12 col-xl-12">
+                  <mat-form-field class="w-100">
+                    <mat-label class="label-font-size">
+                      {{selectedActivityValue}}
+                    </mat-label>
+                    <mat-select [(ngModel)]="timeSheet.activityCo">
+                      <mat-option *ngFor="let activity of activities" [value]="activity.FldPkActivityCo">
+                        {{activity.FldActivityDesc}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>      
+                </div>               
+              </div>
+
+              <div class="row margin_top">
+                <div class="col-md-12 col-xl-12">
+                  <mat-form-field class="w-100">
+                    <mat-label class="label-font-size">
+                      {{selectedStaffValue}}
+                    </mat-label>
+                    <mat-select [(ngModel)]="timeSheet.staffCo">
+                      <mat-option *ngFor="let staff of staffs" [value]="staff.FldPkStaffCo">
+                        {{staff.FldName}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>      
+                </div>               
+              </div>
+
+              <div class="row margin_top">
+                  <div class="col-md-12 col-xl-12">              
+                    <mat-form-field class="w-100">
+                        <mat-label class="label-font-size">Note</mat-label>
+                      <textarea matInput [(ngModel)]="timeSheet.note"></textarea>
+                    </mat-form-field>
+                  </div>                         
+                </div>
+
+              <div class="row margin_top">
+                  <div class="col-md-12 col-xl-12">  
+                    <mat-form-field class="w-100">
+                      <mat-label class="label-font-size">Date</mat-label>
+                      <input (click)="picker.open()" matInput [matDatepicker]="picker" placeholder="Date" [(ngModel)]="timeSheet.date">
+                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+      
+                  </div>                         
+                </div> 
+                
+                <div class="row margin_top">
+                  <div class="col-md-12 col-xl-12">              
+                      <mat-form-field class="w-100">            
+                        <mat-label class="label-font-size">Start Time</mat-label>
+                        <input matInput 
+                         placeholder="Started"
+                         [(ngModel)]="timeSheet.startTime"
+                         class="form-control mt-2 input-height m-b--20"
+                         id="Started"
+                         style="margin-bottom: -3px !important;"
+                         [owlDateTimeTrigger]="dt3"
+                         [owlDateTime]="dt3">
+                        <owl-date-time [pickerType]="'timer'" #dt3 ></owl-date-time>
+                      </mat-form-field>
+                  </div>                         
+                </div>
+                
+                <div class="row margin_top">
+                  <div class="col-md-12 col-xl-12">              
+                      <mat-form-field class="w-100">            
+                          <mat-label class="label-font-size">End Time</mat-label>
+                          <input
+                          matInput
+                          placeholder="Ended"
+                          [(ngModel)]="timeSheet.endTime"
+                          class="form-control mt-2 input-height m-b--20"
+                          id="Ended"
+                          style="margin-bottom: -3px !important;"
+                          [owlDateTimeTrigger]="dt4"
+                          [owlDateTime]="dt4">
+                        <owl-date-time [pickerType]="'timer'" #dt4 ></owl-date-time>
+                      </mat-form-field>
+                  </div>                         
+                </div>          
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning btn_modal_submit" (click)= "saveTimeSheet()">Insert</button>
+          <button type="button" class="btn btn-danger btn_modal_submit" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
+ </div>
+  

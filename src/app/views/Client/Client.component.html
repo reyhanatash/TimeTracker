@@ -1,0 +1,344 @@
+<div class="row text-center">
+  
+  <!-- <div class="col-md-4">
+    <h3>{{ viewDate | calendarDate:(view + 'ViewTitle'):'en' }}</h3>
+  </div>   -->
+</div>
+<!-- <div class="alert alert-info">   
+<strong *ngIf="clickedDate"
+    > {{ clickedDate | date:'medium' }}</strong
+>
+<strong *ngIf="clickedColumn != null"
+    > {{ clickedColumn }}</strong
+>
+</div> -->
+<div class="row">
+    <div class="pull-right btn_title_time">
+        Timesheet
+    </div>
+    <a (click)= "showLogout()" id="menu-user">
+        <i></i>
+    </a>
+</div>
+<div class="row">
+    <span class="timeSheet-top-text timeSheet-staff-top-text pull-right" >Pay Period {{payPeriod}} ending {{dayEndDate}} {{monthEndDate}} {{yearEndDate}}</span>
+</div>
+<br />
+      <div [ngSwitch]="view" class="row">
+            <button
+            class="btn btn-primary btn_staff preBtn"
+            mwlCalendarPreviousView
+            [view]="view"
+            [(viewDate)]="viewDate"
+            (viewDateChange)="closeOpenMonthViewDayPre()"
+          >
+            <i class="fa fa-chevron-left"></i>
+            </button>
+        
+      <mwl-calendar-week-view
+          [viewDate]="viewDate"
+          [events]="events"
+          [refresh]="refresh"
+          (eventClicked)="handleEvent('Clicked', $event.event)"
+          (eventTimesChanged)="eventTimesChanged($event)"
+          *ngSwitchCase="'week'"
+          (dayHeaderClicked)="clickEvent($event.day.date)"
+          (hourSegmentClicked)="clickedDate = $event.date"
+          [weekStartsOn]="6"
+          class="staff_calendar"
+      >
+      </mwl-calendar-week-view>
+      <button
+      class="btn btn-primary btn_staff NextBtn"
+      mwlCalendarNextView
+      [view]="view"
+      [(viewDate)]="viewDate"
+      (viewDateChange)="closeOpenMonthViewDayNext()"
+      >
+        <i class="fa fa-chevron-right"></i>
+      </button>
+</div>
+
+<div class="card mt-4 bg-none w-100" >
+        <div class="items-Timesheet">
+        <h3><span>Total Time</span> <span> {{calculateTotal()}} </span></h3>        
+            <div class="item" *ngFor="let item of timeStaffs" >
+              <h3><span>Total Times</span><span>
+                {{item.myDuration}}
+              </span></h3>
+                <p>Started: {{item.startDate}}</p>
+                <p>Ended: {{item.endDate}}</p>
+                <p>Job#: {{item.jobNumber}}</p>
+                <p>Activity: {{item.activity}}</p>
+                <p>Note: {{item.note}}</p>
+                <div *ngIf="isToday" class="btn-part">
+                  <span (click)="editTime(item)" class="edit-table-icon"><i class="fa fa-edit"></i></span>
+                  <span (click)="deleteTimeSheet(item.timeSheetCo)" class="delete-table-icon">
+                    <i class="fa fa-remove"></i>
+                  </span>                  
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="row hide_time_btn">
+    <button class="btn btn_add_time" (click)="addEvent()">
+        New Entry
+    </button>
+</div>
+<br />
+
+<!-- <h3>
+  <div class="clearfix"></div>
+</h3> -->
+<!-- 
+<div class="card mt-4 bg-none" *ngIf="clickedDate">    
+  <div class="card-body p-0">            
+    <mat-form-field>
+      <input matInput (keyup)="applyFilter($event.target.value)" placeholder="Filter">
+    </mat-form-field>
+
+    <div class="mat-elevation-z8 ">
+      <table class="w-100" mat-table [dataSource]="dataSource" matSort>            
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> DATE </th>
+          <td mat-cell *matCellDef="let row"> {{row.date}} </td>
+        </ng-container>
+    
+        <ng-container matColumnDef="startDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> STARTING </th>
+          <td mat-cell *matCellDef="let row"> {{row.startDate}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="endDate">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ENDING </th>
+          <td mat-cell *matCellDef="let row">  {{row.endDate}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="duration">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> DURATION </th>
+          <td mat-cell *matCellDef="let row">  {{row.duration}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="jobNumber">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> # JOB </th>
+          <td mat-cell *matCellDef="let row">  {{row.jobNumber}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="activity">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIVITY </th>
+          <td mat-cell *matCellDef="let row">  {{row.activity}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="note">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> NOTE </th>
+          <td mat-cell *matCellDef="let row">  {{row.note}} </td>
+        </ng-container>
+        
+        <ng-container matColumnDef="actions">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ACTIONS </th>
+          <td mat-cell *matCellDef="let row" [style.color]="row.color">
+            <span (click)="editTimeSheet(row)" class="edit-table-icon"><i class="fa fa-edit"></i></span>
+            <span (click)="deleteTimeSheet(row)" class="delete-table-icon"><i class="fa fa-remove"></i></span>
+          </td>
+        </ng-container>
+    
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+        </tr>
+      </table>              
+        <mat-paginator [pageSizeOptions]="[10, 40, 100, 150]"></mat-paginator>
+      </div>      
+    </div>
+</div> -->
+
+<!-- <div class="table-responsive" style="display: none;">
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Primary color</th>
+        <th>Secondary color</th>
+        <th>Starts at</th>
+        <th>Ends at</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let event of events">
+        <td>
+          <input
+            type="text"
+            class="form-control"
+            [(ngModel)]="event.title"
+            (keyup)="refresh.next()"
+          />
+        </td>
+        <td>
+          <input
+            type="color"
+            [(ngModel)]="event.color.primary"
+            (change)="refresh.next()"
+          />
+        </td>
+        <td>
+          <input
+            type="color"
+            [(ngModel)]="event.color.secondary"
+            (change)="refresh.next()"
+          />
+        </td>
+        <td>
+          <input
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="event.start"
+            (ngModelChange)="refresh.next()"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="true"
+            dateFormat="Y-m-dTH:i"
+            altFormat="F j, Y H:i"
+            placeholder="Not set"
+          />
+        </td>
+        <td>
+          <input
+            class="form-control"
+            type="text"
+            mwlFlatpickr
+            [(ngModel)]="event.end"
+            (ngModelChange)="refresh.next()"
+            [altInput]="true"
+            [convertModelValue]="true"
+            [enableTime]="true"
+            dateFormat="Y-m-dTH:i"
+            altFormat="F j, Y H:i"
+            placeholder="Not set"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div> -->
+
+<ng-template id="timeModal" #modalContent let-close="close">
+  <div class="modal-header">
+    <h5 *ngIf="!editMode" class="modal-title">Add Time Sheet</h5>
+    <h5 *ngIf="editMode" class="modal-title">Edit Time Sheet</h5>
+    <button type="button" class="close" (click)="close()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <div class="col-md-12 col-xl-12 ">
+
+      <div class="row margin_top">
+        <div class="col-md-12 col-xl-12">  
+          <mat-form-field class="w-100" style="color: #adadad">
+            <mat-label class="label-font-size">Date</mat-label>
+            <input disabled  matInput [matDatepicker]="picker" placeholder="Date" [(ngModel)]="timeSheet.date">{{todayDate}}
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+        </div>                         
+      </div> 
+
+      <div class="row margin_top">
+        <div class="col-md-12 col-xl-12">
+          <mat-form-field class="w-100">
+            <mat-label class="label-font-size">
+              {{selectedJobValue}}
+            </mat-label>
+            <mat-select [(ngModel)]="timeSheet.jobCo">
+              <mat-option *ngFor="let job of jobs" [value]="job.FldPkJobCo">
+                {{job.FldJobNumber}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>      
+        </div>               
+      </div>
+
+      <div class="row margin_top">
+        <div class="col-md-6 col-xl-6">              
+            <mat-form-field class="w-100">            
+              <mat-label class="label-font-size">Starting</mat-label>
+              <input matInput 
+               placeholder="Started"
+               class="form-control mt-2 input-height m-b--20"
+               id="Started"
+               [(ngModel)]="timeSheet.startTime"
+               style="margin-bottom: -3px !important;"
+               [owlDateTimeTrigger]="dt3"
+               [owlDateTime]="dt3">
+              <owl-date-time [pickerType]="'timer'" #dt3 ></owl-date-time>
+            </mat-form-field>
+        </div>
+        <div class="col-md-6 col-xl-6">              
+            <mat-form-field class="w-100">            
+              <mat-label class="label-font-size">Ending</mat-label>
+              <input
+                  matInput
+                  placeholder="Ended"
+                  class="form-control mt-2 input-height m-b--20"
+                  id="Ended"
+                  [(ngModel)]="timeSheet.endTime"endTime
+                  style="margin-bottom: -3px !important;"
+                  [owlDateTimeTrigger]="dt4"
+                  [owlDateTime]="dt4">
+              <owl-date-time [pickerType]="'timer'" #dt4 ></owl-date-time>
+            </mat-form-field>
+        </div>                         
+      </div>
+      
+      <div class="row margin_top">
+        <div class="col-md-12 col-xl-12">
+          <mat-form-field class="w-100">
+            <mat-label class="label-font-size">
+              {{selectedActivityValue}}
+            </mat-label>
+            <mat-select [(ngModel)]="timeSheet.activityCo">
+              <mat-option *ngFor="let activity of activities" [value]="activity.FldPkActivityCo">
+                {{activity.FldActivityDesc}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>      
+        </div>               
+      </div>
+      
+      <div class="row margin_top">
+          <div class="col-md-12 col-xl-12">              
+            <mat-form-field class="w-100">
+                <mat-label class="label-font-size">Note</mat-label>
+              <textarea matInput [(ngModel)]="timeSheet.note"></textarea>
+            </mat-form-field>
+          </div>                         
+        </div>       
+
+  </div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" *ngIf="!editMode" class="btn btn-warning btn_modal_submit" (click)= "saveTimeSheet()">Insert</button>
+    <button type="button" *ngIf="editMode" class="btn btn-warning btn_modal_submit" (click)= "saveTimeSheet()">Update</button>
+    <button type="button" class="btn btn-danger btn_modal_submit" (click)="cancel()" data-dismiss="modal">Cancel</button>
+  </div>
+</ng-template>
+
+<!-- Logout Modal -->
+<div id="logoutModal" class="modal fade bd-example-modal-xl logout_modal" role="dialog">
+<div class="modal-dialog modal-lg">        
+    <!-- Modal content-->
+    <div class="modal-content">            
+    <div class="modal-body">
+        <div class="col-md-12 col-xl-12 " id="menu-profile">
+            <h2>{{staffName}} {{staffFamily}} </h2>
+            <button type="button" class="btn btn_blue" (click)="logout()">Logout</button>
+            <button type="button" class="btn btn_wight" data-dismiss="modal">Cancel</button>
+        </div>
+    </div>
+    </div>
+</div>
+</div>  
